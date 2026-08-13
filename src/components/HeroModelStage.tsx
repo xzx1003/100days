@@ -1,4 +1,4 @@
-import { useGLTF } from '@react-three/drei'
+import { Html, useGLTF } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
@@ -43,9 +43,11 @@ function AnniversaryModel() {
 
 function ModelLoader() {
   return (
-    <div className="model-loader" aria-label="3D模型加载中">
-      <span />
-    </div>
+    <Html center>
+      <div className="model-loader" aria-label="3D模型加载中">
+        <span />
+      </div>
+    </Html>
   )
 }
 
