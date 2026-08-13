@@ -253,6 +253,31 @@ h3 {
   height: 100% !important;
 }
 
+.model-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.model-loader span {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: 1px solid rgba(29, 29, 31, 0.1);
+  border-top-color: rgba(29, 29, 31, 0.42);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(244, 245, 248, 0.28)),
+    rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 14px 38px rgba(37, 39, 44, 0.1);
+  backdrop-filter: blur(14px) saturate(1.2);
+  animation: modelLoaderSpin 780ms linear infinite;
+}
+
 .hero-title-line {
   display: block;
 }
@@ -1643,6 +1668,12 @@ h3 {
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) rotate(45deg) scale(2.35);
+  }
+}
+
+@keyframes modelLoaderSpin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

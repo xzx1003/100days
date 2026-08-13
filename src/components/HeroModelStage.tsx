@@ -41,6 +41,14 @@ function AnniversaryModel() {
   )
 }
 
+function ModelLoader() {
+  return (
+    <div className="model-loader" aria-label="3D模型加载中">
+      <span />
+    </div>
+  )
+}
+
 function HeroModelStage() {
   const stageRef = useRef<HTMLDivElement>(null)
 
@@ -85,7 +93,7 @@ function HeroModelStage() {
       >
         <ambientLight intensity={1.02} />
         <directionalLight position={[2, 2.5, 3]} intensity={0.75} />
-        <Suspense fallback={null}>
+        <Suspense fallback={<ModelLoader />}>
           <AnniversaryModel />
         </Suspense>
       </Canvas>
