@@ -684,15 +684,13 @@ function App() {
           </div>
           <Suspense
             fallback={
-              <div className="hero-model-stage is-loading" aria-label="3D模型加载中">
-                <span className="model-loading">请输入文本</span>
-              </div>
+              <div className="hero-model-stage is-loading" aria-label="3D模型加载中" />
             }
           >
             {loadedSections.has(0) && <HeroModelStage />}
           </Suspense>
           <a className="primary-action" href="#slider" onClick={openArchive}>
-            请输入文本
+            点开看看
             <ArrowDown size={16} />
             {hitMark && (
               <span
