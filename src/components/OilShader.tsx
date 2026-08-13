@@ -575,8 +575,10 @@ export default function OilShader() {
 
     // ---------- Sizes / FBOs ----------
 
-    const SIM_RES = 256 // half-res-ish sim
-    const DYE_RES = 1024
+    const SIM_RES = 192
+    const DYE_RES = 640
+    const MAX_DPR = 1.25
+    const FRAME_INTERVAL = 1000 / 30
 
     let velocity!: DoubleFBO
     let dye!: DoubleFBO
@@ -595,7 +597,7 @@ export default function OilShader() {
 
     function initFBOs() {
       const rect = canvas!.getBoundingClientRect()
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR)
       dprWidth = Math.max(1, Math.floor(rect.width * dpr))
       dprHeight = Math.max(1, Math.floor(rect.height * dpr))
       canvas!.width = dprWidth
@@ -831,14 +833,15 @@ export default function OilShader() {
     // ---------- Main loop ----------
 
     let last = performance.now()
+    let lastPaint = last
     let raf = 0
-    let startTime = performance.now()
+    const startTime = performance.now()
 
     // Sim params.
     const VELOCITY_DISSIPATION = 0.6   // viscosity feel
     const DYE_DISSIPATION = 1.2        // how fast ripples settle
-    const PRESSURE_ITERATIONS = 24
-    const CURL_STRENGTH = 22.0
+    const PRESSURE_ITERATIONS = 14
+    const CURL_STRENGTH = 18.0
 
     function step(dt: number) {
       // 1) Curl
@@ -948,8 +951,14 @@ export default function OilShader() {
 
     function frame() {
       const now = performance.now()
+      if (now - lastPaint < FRAME_INTERVAL) {
+        raf = requestAnimationFrame(frame)
+        return
+      }
+
       let dt = (now - last) / 1000
       last = now
+      lastPaint = now
       if (dt > 0.05) dt = 0.05 // clamp big spikes (tab-switch, etc.)
 
       if (visible && inViewport) {
