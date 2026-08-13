@@ -4,7 +4,7 @@ import { Suspense, useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import type { Group } from 'three'
 
-const modelPath = '/models/anniversary-model.glb'
+const modelPath = `${import.meta.env.BASE_URL}models/anniversary-model.glb`
 const modelTargetTilt = {
   x: 0,
   y: 0,
