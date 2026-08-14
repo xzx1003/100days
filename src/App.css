@@ -1583,15 +1583,10 @@ h3 {
   text-indent: 0;
 }
 
-.letter-content p:first-child {
-  font-weight: 650;
-}
-
 .letter-content p:last-child {
   margin-top: 1.35em;
   margin-bottom: 0;
-  text-align: right;
-  font-weight: 650;
+  text-align: left;
 }
 
 .letter-page-actions {
