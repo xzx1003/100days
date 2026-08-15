@@ -9,19 +9,23 @@ const WaveText = lazy(() => import('./components/WaveText'))
 const PinkNewsletterPage = lazy(() => import('./components/PinkNewsletterPage'))
 const RichTextEditorPage = lazy(() => import('./components/RichTextEditorPage'))
 
-const cardsPerPage = 12
-const archivePages = Array.from({ length: 4 }, (_, pageIndex) =>
-  Array.from({ length: cardsPerPage }, (_, index) => ({
-    id: pageIndex * cardsPerPage + index + 1,
-    index,
-    page: pageIndex,
-    lit: [2, 9, 16, 23, 31, 42].includes(pageIndex * cardsPerPage + index + 1),
-    tilt: [-9, -4, 3, 7, -6, 5, -3, 8, -8, 4, -5, 6][index],
-    depth: [0, 34, -18, 22, -30, 12, 30, -12, 8, -24, 26, -8][index],
-  })),
-)
-
-const archiveCards = archivePages.flat()
+const archiveImageModules = import.meta.glob('../alum/*.{jpg,jpeg,png,webp,avif,gif}', {
+  eager: true,
+  import: 'default',
+  query: '?url',
+})
+const archiveImages = Object.entries(archiveImageModules)
+  .sort(([a], [b]) => a.localeCompare(b, 'zh-CN'))
+  .map(([, src]) => src as string)
+const archiveTilts = [-9, -4, 3, 7, -6, 5, -3, 8, -8, 4, -5, 6]
+const archiveDepths = [0, 34, -18, 22, -30, 12, 30, -12, 8, -24, 26, -8]
+const archiveCards = archiveImages.map((image, index) => ({
+  id: index + 1,
+  image,
+  lit: index % 5 === 1,
+  tilt: archiveTilts[index % archiveTilts.length],
+  depth: archiveDepths[index % archiveDepths.length],
+}))
 
 type ArchiveCardData = (typeof archiveCards)[number]
 
@@ -237,14 +241,6 @@ function HeroTitle({
   )
 }
 
-function PhotoSlot({ label }: { label: string }) {
-  return (
-    <div className="photo-slot" aria-label={label}>
-      <span>照片留白</span>
-    </div>
-  )
-}
-
 function CatSlider() {
   const [activeOption, setActiveOption] = useState<number>(0)
 
@@ -404,8 +400,7 @@ function useSectionPreload(refs: Array<React.RefObject<HTMLElement | null>>) {
   return loadedSections
 }
 
-function ArchiveCard({ id, index: _index, lit, tilt, depth }: ArchiveCardData) {
-  const hasPhoto = id % 3 === 0 || id % 4 === 0
+function ArchiveCard({ id, image, lit, tilt, depth }: ArchiveCardData) {
   const [cardTilt, setCardTilt] = useState(cardTiltBase)
 
   const handleCardMove = (event: React.MouseEvent<HTMLElement>) => {
@@ -419,7 +414,7 @@ function ArchiveCard({ id, index: _index, lit, tilt, depth }: ArchiveCardData) {
 
   return (
     <div
-      className={`archive-card-frame ${hasPhoto ? 'with-photo' : ''} ${lit ? 'is-lit' : ''}`}
+      className={`archive-card-frame with-photo ${lit ? 'is-lit' : ''}`}
       data-tilt={tilt}
       data-depth={depth}
       style={{
@@ -439,15 +434,7 @@ function ArchiveCard({ id, index: _index, lit, tilt, depth }: ArchiveCardData) {
         onPointerMove={handleCardMove}
         onPointerLeave={() => setCardTilt(cardTiltBase)}
       >
-        {hasPhoto && <PhotoSlot label={`照片留白 ${id}`} />}
-        <h3>请输入文本</h3>
-        <div className="card-person">
-          <div className="avatar-slot" />
-          <div>
-            <strong>请输入文本</strong>
-            <span>请输入文本</span>
-          </div>
-        </div>
+        <img src={image} alt="" loading={id <= 8 ? 'eager' : 'lazy'} draggable="false" />
       </article>
     </div>
   )
