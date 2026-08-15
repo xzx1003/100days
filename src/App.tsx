@@ -14,14 +14,50 @@ const archiveImageModules = import.meta.glob('../alum/*.{jpg,jpeg,png,webp,avif,
   import: 'default',
   query: '?url',
 })
+const archiveImageRatios: Record<string, number> = {
+  '../alum/0dc7a43f9a0eaf3764a27ebca4d3ced1.jpg': 1706 / 1279,
+  '../alum/18690078ddcc94e812976efb763e2c79.jpg': 946 / 2102,
+  '../alum/1d559de58a9e33658ff0fafb43fa08d7.jpg': 1706 / 1279,
+  '../alum/28f05cb745d4578adf7db701973caf7c.jpg': 1706 / 1279,
+  '../alum/2a24b4c8ec48d393c8358f4fe2122f01.jpg': 1279 / 1706,
+  '../alum/33af1e8b4724ba875ff383b51be64fee.jpg': 1279 / 1706,
+  '../alum/4762e1ab92e631883d83dec06c114e2d.jpg': 1706 / 1279,
+  '../alum/4be336a6a000adcea0e29a511499e778.jpg': 2570 / 1280,
+  '../alum/950a60d5cd2b875352eca7109da1e514.jpg': 1706 / 1279,
+  '../alum/97a45fc3dd144b12f5d710aa13ee9e4c.jpg': 1080 / 1440,
+  '../alum/QQ浏览器截图20260811233751.png': 507 / 459,
+  '../alum/QQ浏览器截图20260811234055.png': 506 / 443,
+  '../alum/QQ浏览器截图20260811234223.png': 500 / 554,
+  '../alum/QQ浏览器截图20260811234626.png': 572 / 663,
+  '../alum/QQ浏览器截图20260811234647.png': 576 / 497,
+  '../alum/QQ浏览器截图20260811234832.png': 564 / 675,
+  '../alum/QQ浏览器截图20260811234903.png': 553 / 589,
+  '../alum/QQ浏览器截图20260811235041.png': 568 / 272,
+  '../alum/QQ浏览器截图20260813222604.png': 570 / 490,
+  '../alum/QQ浏览器截图20260813222753.png': 551 / 672,
+  '../alum/QQ浏览器截图20260813224740.png': 570 / 634,
+  '../alum/ScreenShot_2026-08-13_224220_275.png': 552 / 660,
+  '../alum/ScreenShot_2026-08-13_224526_188.png': 461 / 498,
+  '../alum/Screenshot_20260523_232116_com.tencent.mm.jpg': 816 / 1800,
+  '../alum/ae5ba1795846c4fdeaba566580cb30d8.jpg': 1279 / 1706,
+  '../alum/bc8544bbf56fc088facffcac21371c25.jpg': 1080 / 1440,
+  '../alum/d49b0ec45c203e9a0a76f221d417a1fa.jpg': 946 / 2102,
+  '../alum/e16ab8f572923857809f278b43c2730f.jpg': 1706 / 1279,
+  '../alum/f562a1e3cc1fea15b4c11830b17e05f3.jpg': 1080 / 1440,
+  '../alum/f834eaeea7fa479ab12efd1b1cfd73ff.jpg': 946 / 2102,
+  '../alum/facb329fe70c4129a24b43c770cd6077.jpg': 1440 / 1080,
+  '../alum/fb9c0c2b4edc93d2f73e917bec3deaae.jpg': 1518 / 1279,
+  '../alum/微信图片_20260601173023_1149_2.png': 405 / 239,
+}
 const archiveImages = Object.entries(archiveImageModules)
   .sort(([a], [b]) => a.localeCompare(b, 'zh-CN'))
-  .map(([, src]) => src as string)
+  .map(([path, src]) => ({ src: src as string, ratio: archiveImageRatios[path] ?? 1 }))
 const archiveTilts = [-9, -4, 3, 7, -6, 5, -3, 8, -8, 4, -5, 6]
 const archiveDepths = [0, 34, -18, 22, -30, 12, 30, -12, 8, -24, 26, -8]
-const archiveCards = archiveImages.map((image, index) => ({
+const archiveCards = archiveImages.map(({ src, ratio }, index) => ({
   id: index + 1,
-  image,
+  image: src,
+  ratio,
   lit: index % 5 === 1,
   tilt: archiveTilts[index % archiveTilts.length],
   depth: archiveDepths[index % archiveDepths.length],
@@ -341,7 +377,7 @@ function FloatingWordsPage() {
             } as React.CSSProperties
           }
         >
-          <Suspense fallback={<span className="word-fallback">词语</span>}>
+          <Suspense fallback={<span className="word-fallback">{word.text}</span>}>
             <WaveText text={word.text} />
           </Suspense>
         </div>
@@ -400,7 +436,7 @@ function useSectionPreload(refs: Array<React.RefObject<HTMLElement | null>>) {
   return loadedSections
 }
 
-function ArchiveCard({ id, image, lit, tilt, depth }: ArchiveCardData) {
+function ArchiveCard({ id, image, ratio, lit, tilt, depth }: ArchiveCardData) {
   const [cardTilt, setCardTilt] = useState(cardTiltBase)
 
   const handleCardMove = (event: React.MouseEvent<HTMLElement>) => {
@@ -420,6 +456,7 @@ function ArchiveCard({ id, image, lit, tilt, depth }: ArchiveCardData) {
       style={{
         '--tilt': `${tilt}deg`,
         '--depth': `${depth}px`,
+        '--photo-ratio': ratio,
         '--delay': `${Math.min(id - 1, 28) * 34}ms`,
       } as React.CSSProperties}
     >

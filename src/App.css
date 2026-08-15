@@ -704,11 +704,12 @@ h3 {
 }
 
 .archive-track {
+  --archive-card-height: clamp(230px, 38svh, 318px);
   height: 100%;
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-  grid-auto-columns: clamp(168px, 13.2vw, 232px);
+  grid-template-rows: repeat(2, var(--archive-card-height));
+  grid-auto-columns: auto;
   gap: clamp(10px, 1.35vw, 18px);
   align-items: center;
   width: max-content;
@@ -726,7 +727,8 @@ h3 {
 
 .archive-card-frame {
   min-height: 0;
-  height: clamp(210px, 36svh, 300px);
+  width: calc(var(--archive-card-height) * var(--photo-ratio));
+  height: var(--archive-card-height);
   opacity: 0;
   filter: blur(8px);
   clip-path: inset(45% 45% 45% 45% round 999px);
@@ -764,7 +766,7 @@ h3 {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   user-select: none;
   -webkit-user-drag: none;
@@ -823,10 +825,6 @@ h3 {
 
 .archive-card-frame:nth-child(3n) {
   margin-top: clamp(10px, 2.2svh, 24px);
-}
-
-.archive-card-frame.with-photo {
-  height: clamp(230px, 38svh, 318px);
 }
 
 .floating-words-section {
@@ -1924,7 +1922,7 @@ h3 {
   }
 
   .archive-track {
-    grid-auto-columns: clamp(158px, 38vw, 220px);
+    --archive-card-height: clamp(214px, 37svh, 292px);
     padding-block: clamp(20px, 3svh, 34px);
   }
 
@@ -2003,13 +2001,9 @@ h3 {
   .archive-card-frame,
   .archive-card-frame:nth-child(2n),
   .archive-card-frame:nth-child(3n) {
-    height: clamp(198px, 35svh, 278px);
+    height: var(--archive-card-height);
     min-height: 0;
     margin-top: 0;
-  }
-
-  .archive-card-frame.with-photo {
-    height: clamp(214px, 37svh, 292px);
   }
 
   .floating-words-section {
@@ -2076,7 +2070,7 @@ h3 {
   }
 
   .archive-track {
-    grid-auto-columns: minmax(190px, 68vw);
+    --archive-card-height: clamp(190px, 34svh, 260px);
   }
 
   .hero-model-stage {
